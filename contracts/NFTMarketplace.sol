@@ -11,6 +11,8 @@ import "hardhat/console.sol";
 contract NFTMarketplace {
     SignatureVerify public signatureVerify;
 
+    event CreateMarketSale(address erc721Address,uint256 tokenId,address sellerAddress,address buyerAddress,uint256 sellAmount,address erc20Address);
+
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
     function createMarketSale(
@@ -30,6 +32,8 @@ contract NFTMarketplace {
 
       IERC721(erc721Address).safeTransferFrom(sellerAddress, buyerAddress, tokenId);
       IERC20(erc20Address).transferFrom(buyerAddress, sellerAddress, sellAmount);
+
+      emit CreateMarketSale(erc721Address,tokenId,sellerAddress,buyerAddress,sellAmount,erc20Address);
     }
 
     function createMarketSaleWithoutSignature(
@@ -43,6 +47,8 @@ contract NFTMarketplace {
       
       IERC721(erc721Address).safeTransferFrom(sellerAddress, buyerAddress, tokenId);
       IERC20(erc20Address).transferFrom(buyerAddress, sellerAddress, sellAmount);
+
+      emit CreateMarketSale(erc721Address,tokenId,sellerAddress,buyerAddress,sellAmount,erc20Address);
     }
 
 }
