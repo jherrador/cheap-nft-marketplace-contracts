@@ -48,54 +48,63 @@ const { ethers } = require('hardhat');
         return {nftContract, marketplaceContract, ratherlabsContract};
     }
   
-    // describe("Auction", function () {
-    //   it("trade only ERC20", async function () {
-    //    const {nftContract, marketplaceContract, ratherlabsContract} = await setup();
-    //    const [signer, secondary_account] = await hre.ethers.getSigners();
-    //    const signerAddress = await signer.getAddress();
-    //    const secondaryAccountAddress = await secondary_account.getAddress();
+    describe("Auction", function () {
+      it("trade only ERC20", async function () {
+       const {nftContract, marketplaceContract, ratherlabsContract} = await setup();
+       const [signer, secondary_account] = await hre.ethers.getSigners();
+       const signerAddress = await signer.getAddress();
+       const secondaryAccountAddress = await secondary_account.getAddress();
 
-    //     console.log("Signer Address", signerAddress);
+        console.log("Signer Address", signerAddress);
 
-    //     //0. Mint tokens for secondary_account
-    //     await ratherlabsContract.mint(await secondaryAccountAddress, 10);
-    //     //1. Approve All NFTs
-    //     await nftContract.setApprovalForAll(marketplaceContract.address, true);
-    //     expect(await nftContract.isApprovedForAll(signerAddress, marketplaceContract.address)).to.true;
+        //0. Mint tokens for secondary_account
+        await ratherlabsContract.mint(await secondaryAccountAddress, 10);
+        //1. Approve All NFTs
+        await nftContract.setApprovalForAll(marketplaceContract.address, true);
+        expect(await nftContract.isApprovedForAll(signerAddress, marketplaceContract.address)).to.true;
 
-    //     // //2. Approve ERC20
-    //     await ratherlabsContract.connect(secondary_account).approve(marketplaceContract.address, 2);
+        //2. Approve ERC20
+        await ratherlabsContract.connect(secondary_account).approve(marketplaceContract.address, 2);
 
-    //     //3. Trade
-    //     await marketplaceContract.createMarketSaleWithoutSignature(nftContract.address, 0,signerAddress, secondaryAccountAddress, 1, ratherlabsContract.address);
-    //   });
+        //3. Trade
+        await marketplaceContract.createMarketSale(nftContract.address, 0,signerAddress, secondaryAccountAddress, 1, ratherlabsContract.address);
+      });
     
-    // });
+    });
     describe("Signature", function () {
       it("verify signature", async function () {
         const marketplaceContract = await deployMarketplace();
         const [signer, secondary_account] = await hre.ethers.getSigners();
-        const signerAddress = "0x534a06e73147D28969bcAe36f08936aAD358a564";
+        
+        const auction = {
+          tokenId: 2,
+          contractAddress: "0xbde6e860d0a32ec37f30562f6c915d2a580ef71d",
+          ownerAddress: "0x9780Ab2bFC783D90098653B79eEDDf869c272f53",
+          bidderAddress: "0x534a06e73147D28969bcAe36f08936aAD358a564",
+          bid: "3000000000000000000"
+        }
 
-        const r = "0xd8627fe6a4b8048d44d836bc38e022dabd3e19412edf1eb7f917d81a68184bfc";
-        const v =27;
-        const s ="0x784c6bddc8fa47c988e78776e05645eb21a12102b2f18616993ec94904bfe187";
+        const typeBid = {
+          Auction: [
+            { name: "tokenId", type: "uint256" },
+            { name: "contractAddress", type: "address" },
+            { name: "ownerAddress", type: "address" },
+            { name: "bidderAddress", type: "address" },
+            { name: "bid", type: "string" },
+          ],
+        };
 
-        const lol = await marketplaceContract.test();
-        console.log(lol);
-        // const auction = {
-        //   tokenId: 2,
-        //   contractAddress: "0xbde6e860d0a32ec37f30562f6c915d2a580ef71d",
-        //   ownerAddress: "0x9780Ab2bFC783D90098653B79eEDDf869c272f53",
-        //   bidderAddress: "0x534a06e73147D28969bcAe36f08936aAD358a564",
-        //   bid: ethers.BigNumber.from("30000000000000000000")
-        // }
-        // console.log(auction);
-        // console.log(r);
-        // console.log(v);
-        // console.log(s);
-        // console.log(signerAddress);
-        // await marketplaceContract.verifySignature(auction, signerAddress, r, s, v)
+        const domain = {
+          name: "Cheap NFT Marketplace",
+          version: "1",
+          chainId: 31337,
+          verifyingContract: marketplaceContract.address,
+        };
+        const signature = await signer._signTypedData(domain, typeBid, auction);
+
+        const [v, r, s ] = await marketplaceContract.splitSignature(signature);
+        
+        const expected = await marketplaceContract.verifySignature(auction, await signer.getAddress(), r, s, v);
       });
     });
     
