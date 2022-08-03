@@ -1,4 +1,4 @@
-# Check NFT Marketplace Smart Contracts
+# NFT Marketplace Smart Contracts
 
 This project that contains the smart contracts necessary in Cheap NFT Marketplace project.
 https://github.com/jherrador/cheap-nft-marketplace-contracts
