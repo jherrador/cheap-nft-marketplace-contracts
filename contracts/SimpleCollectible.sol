@@ -8,7 +8,7 @@ contract SimpleCollectible is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    constructor() public ERC721("NFT-Cheap-MarketPlace", "NCM") {}
+    constructor() ERC721("NFT-Cheap-MarketPlace", "NCM") {}
 
     function createCollectible(address owner, string memory tokenURI)
         public
