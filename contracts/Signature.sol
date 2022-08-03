@@ -54,7 +54,7 @@ contract Signature {
 
     function splitSignature(bytes memory sig)
         public
-        view
+        pure
         returns (uint8 v, bytes32 r, bytes32 s)
     {
         
