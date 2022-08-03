@@ -40,16 +40,6 @@ const { ethers } = require('hardhat');
       return contract;
     }
 
-    async function deploySignatureVerify() {
-      const SignatureVerify = await hre.ethers.getContractFactory("SignatureVerify");
-      const signatureVerify = await SignatureVerify.deploy();
-    
-      const contract = await signatureVerify.deployed();
-    
-      console.log("Contract Deployed at", signatureVerify.address);
-      return signatureVerify;
-    }
-
 
     async function setup() {
        const nftContract = await deployNft();
@@ -91,20 +81,21 @@ const { ethers } = require('hardhat');
         const v =27;
         const s ="0x784c6bddc8fa47c988e78776e05645eb21a12102b2f18616993ec94904bfe187";
 
-
-        const auction = {
-          tokenId: 2,
-          contractAddress: "0xbde6e860d0a32ec37f30562f6c915d2a580ef71d",
-          ownerAddress: "0x9780Ab2bFC783D90098653B79eEDDf869c272f53",
-          bidderAddress: "0x534a06e73147D28969bcAe36f08936aAD358a564",
-          bid: ethers.BigNumber.from("30000000000000000000")
-        }
-        console.log(auction);
-        console.log(r);
-        console.log(v);
-        console.log(s);
-        console.log(signerAddress);
-        await marketplaceContract.verifySignature(auction, signerAddress, r, s, v)
+        const lol = await marketplaceContract.test();
+        console.log(lol);
+        // const auction = {
+        //   tokenId: 2,
+        //   contractAddress: "0xbde6e860d0a32ec37f30562f6c915d2a580ef71d",
+        //   ownerAddress: "0x9780Ab2bFC783D90098653B79eEDDf869c272f53",
+        //   bidderAddress: "0x534a06e73147D28969bcAe36f08936aAD358a564",
+        //   bid: ethers.BigNumber.from("30000000000000000000")
+        // }
+        // console.log(auction);
+        // console.log(r);
+        // console.log(v);
+        // console.log(s);
+        // console.log(signerAddress);
+        // await marketplaceContract.verifySignature(auction, signerAddress, r, s, v)
       });
     });
     

@@ -17,9 +17,6 @@ contract SignatureVerify {
     bytes32 private DOMAIN_SEPARATOR;
 
     constructor(address verifyingContract, uint256 chainId) {
-        console.log("SIGNATURE VERIFY CONTRACT");
-        console.log(verifyingContract);
-        console.log(chainId);
         DOMAIN_SEPARATOR = keccak256(abi.encode(
             EIP712_DOMAIN,
             keccak256("Cheap NFT Marketplace"),
